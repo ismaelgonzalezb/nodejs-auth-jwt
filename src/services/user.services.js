@@ -24,6 +24,10 @@ class UserService {
     };
   };
 
+  login = async ({ username, password }) => {
+    const isAnExistingUser = await UserRepository.findOne({ username });
+  };
+
   getUsers = async () => {
     const users = await UserRepository.find();
 
