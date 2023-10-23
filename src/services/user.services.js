@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const { UserRepository } = require("../repositories");
 
 class UserService {
@@ -12,11 +13,13 @@ class UserService {
       throw error;
     }
 
-    await UserRepository.create({ username, password, department });
+    const hash = await bcrypt.hash(password, 8);
+
+    await UserRepository.create({ username, password: hash, department });
 
     return {
       username,
-      password,
+      password: hash,
       department,
     };
   };
