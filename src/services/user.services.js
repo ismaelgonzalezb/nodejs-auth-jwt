@@ -29,6 +29,30 @@ class UserService {
   login = async ({ username, password }) => {
     const user = await UserRepository.findOne({ username });
 
+    if (!user) {
+      const error = new Error();
+      error.message = `User not found!`;
+      error.status = 404;
+      throw error;
+    }
+
+    if (!password) {
+      const error = new Error();
+      error.message = `Password missing!`;
+      error.status = 404;
+      throw error;
+    }
+
+    const isValidPassword = bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      const error = new Error();
+      error.message = "Invalid credentials";
+      error.status = 401;
+
+      throw error;
+    }
+
     const accessToken = createJWT(user._id);
 
     return { accessToken };
