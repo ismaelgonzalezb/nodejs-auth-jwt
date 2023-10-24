@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+
+const { createJWT, validateJwt } = require("../middlewares");
 const { UserRepository } = require("../repositories");
 
 class UserService {
@@ -25,7 +27,11 @@ class UserService {
   };
 
   login = async ({ username, password }) => {
-    const isAnExistingUser = await UserRepository.findOne({ username });
+    const user = await UserRepository.findOne({ username });
+
+    const accessToken = createJWT(user._id);
+
+    return { accessToken };
   };
 
   getUsers = async () => {
